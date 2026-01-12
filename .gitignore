@@ -1,0 +1,14 @@
+# Ignore sensitive environment variables
+.env
+
+# Ignore large data volumes (adjust names to your project)
+/data
+/db_data
+/volumes
+
+# Ignore OS-specific files
+.DS_Store
+node_modules/
+
+# Ignore binary files
+*.parquet
