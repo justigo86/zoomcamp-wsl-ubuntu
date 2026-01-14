@@ -16,7 +16,7 @@ ENV PATH="/code/.venv/bin:$PATH"
 # COPY requirements.txt .
 COPY pipeline.py pyproject.toml .python-version uv.lock ./
 
-# 4. Install dependencies
+# 4. Install dependencies - note: will not install dev dependencies
 # RUN pip install --no-cache-dir -r requirements.txt
 # RUN pip install pandas pyarrow
 RUN uv sync --locked
