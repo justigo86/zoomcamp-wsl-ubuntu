@@ -1,36 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
+#NOTE: code taken from Jupyter Notebook and converted into .py file
+# file then updated from noteboook process into python script/function
 
 import pandas as pd
-
-
-# In[2]:
-
-
-pd.__file__
-
-
-# In[3]:
-
-
-prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
-url = f"{prefix}yellow_tripdata_2021-01.csv.gz"
-url
-
-
-# In[4]:
-
-
-# df = pd.read_csv(url) - ran first, but must update due to error
-# For a description of the fields- see Yellow Trips Data Dictionary:
-# https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf
-
-# There is an error for "DtypeWarning: ... mixed types" on multiple columns
-# this is because the data has values in cols that don't match the types inferred by read_csv()
-# we must specify the types manually
+from sqlalchemy import create_engine
+from tqdm.auto import tqdm
 
 dtype = {
     "VendorID": "Int64",
@@ -62,27 +35,64 @@ df = pd.read_csv(
     parse_dates=parse_dates
 )
 
+def insert_data():
+    # parameterize user, password, host, port, db name, table name
+    pg_user = "root"
+    pg_pw = "root"
+    pg_host = "localhost"
+    pg_port = "5432"
+    pg_db = "ny_taxi"
+    table_name = "yellow_taxi_data"
 
-# In[5]:
+    # parameterize yr and mo values in case we want to update them later
+    year = 2021
+    month = 1
+
+    # due to size of dataset- need to break the read up into chunks
+    chunksize = 100000
+
+    # url variable
+    prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
+    url = f"{prefix}yellow_tripdata_{year}-{month:02d}.csv.gz"
+    engine = create_engine(f'postgresql://{pg_user}:{pg_pw}@{pg_host}:{pg_port}/{pg_db}')
+
+    # df_iter = dataframe iterable variable
+    df_iter = pd.read_csv(
+        url,
+        dtype=dtype,
+        parse_dates=parse_dates,
+        iterator=True,
+        chunksize=chunksize
+    )
+    # iterator and chunksize are iterable values to create make the variable iterable
+
+    # boolean var to check if table exists
+    check = True
+    # insert data with each loop
+    for df_chunk in tqdm(df_iter):
+        # check if table exists
+        if check:
+            # use .head().to_sql() in order to create the table - not adding data yet
+            # helpful for large datasets - like this one
+            df_chunk.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+            check = False
+            print("Created table in database")
+        # insert data into the table - one chunk at a time
+        df_chunk.to_sql(name=table_name, con=engine, if_exists='append')
+        print("Inserted", len(df_chunk), "rows of data")
+
+if __name__ == '__main__':
+    insert_data()
 
 
-df.head()
 
+# df = pd.read_csv(url) - ran first, but must update due to error
+# For a description of the fields- see Yellow Trips Data Dictionary:
+# https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf
 
-# In[6]:
-
-
-df.shape
-
-
-# In[7]:
-
-
-df.dtypes
-
-
-# In[15]:
-
+# There is an error for "DtypeWarning: ... mixed types" on multiple columns
+# this is because the data has values in cols that don't match the types inferred by read_csv()
+# we must specify the types manually
 
 # !uv add sqlalchemy psycopg2-binary
 # - already ran - no need to install again
@@ -90,76 +100,13 @@ df.dtypes
 # !	- shell escape character - tells Jupyter to treat code as shell command rather than python code
 # installing sqlalchemy and psycopg2 will install them in project toml file as dependency
 
-
-# In[8]:
-
-
-from sqlalchemy import create_engine
-engine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')
-
-
-# In[9]:
-
-
-print(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))
+# print(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))
 # prints DDL schema
 # shows the schema that's going to be unsed in out DB
 
-
-# In[10]:
-
-
-df.head(n=0).to_sql(name='yellow_taxi_data', con=engine, if_exists='replace')
-# use .head().to_sql() in order to create the table - not adding data yet
-# helpful for large datasets - like this one
-
-
-# In[22]:
-
-
-# due to size of dataset- need to break the read up into chunks
-# df_iter = dataframe iterable variable
-df_iter = pd.read_csv(
-    url,
-    dtype=dtype,
-    parse_dates=parse_dates,
-    iterator=True,
-    chunksize=100000
-)
-# iterator and chunksize are iterable values to create make the variable iterable
-
-
-# In[21]:
-
+# use tqdm to see data insert progress
+# !uv add tqdm
 
 # great way to make sure variable is iterable
-for df_chunk in df_iter:
-    print(len(df_chunk))
-
-
-# In[13]:
-
-
-# use tqdm to see data insert progress
-get_ipython().system('uv add tqdm')
-
-
-# In[14]:
-
-
-from tqdm.auto import tqdm
-
-
-# In[23]:
-
-
-# insert data with each loop
-for df_chunk in tqdm(df_iter):
-    df_chunk.to_sql(name='yellow_taxi_data', con=engine, if_exists='append')
-
-
-# In[ ]:
-
-
-
-
+# for df_chunk in df_iter:
+#     print(len(df_chunk))
