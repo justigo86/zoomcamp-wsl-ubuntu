@@ -1,5 +1,5 @@
 # 1. Use an existing image as a base (e.g., Python, Node, PHP)
-FROM python:slim
+FROM python:3.13.11-slim
 # FROM python:3.13.11-slim
 
 #include uv as a dependency - via from variable
@@ -14,7 +14,7 @@ ENV PATH="/code/.venv/bin:$PATH"
 
 # 3. Copy your dependency file first (optimizes building)
 # COPY requirements.txt .
-COPY pipeline.py pyproject.toml .python-version uv.lock ./
+COPY pyproject.toml .python-version uv.lock ./
 
 # 4. Install dependencies - note: will not install dev dependencies
 # RUN pip install --no-cache-dir -r requirements.txt
@@ -23,6 +23,8 @@ RUN uv sync --locked
 
 # 5. Copy the rest of your project code - if desired
 # COPY . ./
+# COPY pipeline.py ./ - moved to ingest_data to create table and insert data
+COPY ingest_data.py ./
 
 # 6. Tell the container which port to let traffic through
 
@@ -31,4 +33,5 @@ RUN uv sync --locked
 
 # 8. Specify the entry point for the container - command that runs when container starts
 # ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
-ENTRYPOINT ["python", "pipeline.py"]
+# ENTRYPOINT ["python", "pipeline.py"]
+ENTRYPOINT ["python", "ingest_data.py"]

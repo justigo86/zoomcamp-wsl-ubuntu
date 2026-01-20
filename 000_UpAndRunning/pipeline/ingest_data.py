@@ -2,6 +2,7 @@
 # file then updated from noteboook process into python script/function
 
 import pandas as pd
+import click
 from sqlalchemy import create_engine
 from tqdm.auto import tqdm
 
@@ -29,27 +30,42 @@ parse_dates = [
     "tpep_dropoff_datetime"
 ]
 
-df = pd.read_csv(
-    url,
-    dtype=dtype,
-    parse_dates=parse_dates
-)
+@click.command()
+@click.option('--pg-user', default='root', help='PostgreSQL user')
+@click.option('--pg-pw', default='root', help='PostgreSQL password')
+@click.option('--pg-host', default='localhost', help='PostgreSQL host')
+@click.option('--pg-port', default=5432, type=int, help='PostgreSQL port')
+@click.option('--pg-db', default='ny_taxi', help='PostgreSQL database name')
+@click.option('--target-table', default='yellow_taxi_data', help='Target table name')
+@click.option('--year', default=2001, type=int, help='Year for the dataset')
+@click.option('--month', default=1, type=int, help='Month for the dataset')
+@click.option('--chunksize', default=100000, type=int, help='Number of rows per chunk to process')
+def insert_data(
+    pg_user,
+    pg_pw,
+    pg_host,
+    pg_port,
+    pg_db,
+    target_table,
+    year,
+    month,
+    chunksize
+):
+    # variables removed in order to use click options instead - to add them as params to func
+    # # parameterize user, password, host, port, db name, table name
+    # pg_user = "root"
+    # pg_pw = "root"
+    # pg_host = "localhost"
+    # pg_port = "5432"
+    # pg_db = "ny_taxi"
+    # target_table = "yellow_taxi_data"
 
-def insert_data():
-    # parameterize user, password, host, port, db name, table name
-    pg_user = "root"
-    pg_pw = "root"
-    pg_host = "localhost"
-    pg_port = "5432"
-    pg_db = "ny_taxi"
-    table_name = "yellow_taxi_data"
+    # # parameterize yr and mo values in case we want to update them later
+    # year = 2021
+    # month = 1
 
-    # parameterize yr and mo values in case we want to update them later
-    year = 2021
-    month = 1
-
-    # due to size of dataset- need to break the read up into chunks
-    chunksize = 100000
+    # # due to size of dataset- need to break the read up into chunks
+    # chunksize = 100000
 
     # url variable
     prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
@@ -74,18 +90,18 @@ def insert_data():
         if check:
             # use .head().to_sql() in order to create the table - not adding data yet
             # helpful for large datasets - like this one
-            df_chunk.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+            df_chunk.head(0).to_sql(name=target_table, con=engine, if_exists='replace')
             check = False
             print("Created table in database")
         # insert data into the table - one chunk at a time
-        df_chunk.to_sql(name=table_name, con=engine, if_exists='append')
+        df_chunk.to_sql(name=target_table, con=engine, if_exists='append')
         print("Inserted", len(df_chunk), "rows of data")
 
 if __name__ == '__main__':
     insert_data()
 
 
-
+## Leftover notes from notebook:
 # df = pd.read_csv(url) - ran first, but must update due to error
 # For a description of the fields- see Yellow Trips Data Dictionary:
 # https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf
