@@ -70,6 +70,7 @@ def insert_data(
     # url variable
     prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
     url = f"{prefix}yellow_tripdata_{year}-{month:02d}.csv.gz"
+    # url = f"{prefix}yellow_tripdata_2021-01.csv.gz"
     engine = create_engine(f'postgresql://{pg_user}:{pg_pw}@{pg_host}:{pg_port}/{pg_db}')
 
     # df_iter = dataframe iterable variable
