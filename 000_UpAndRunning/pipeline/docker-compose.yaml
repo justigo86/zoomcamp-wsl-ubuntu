@@ -1,0 +1,40 @@
+services:
+  # The Postgres Database Service
+  pgdatabase:
+    image: postgres:18
+    container_name: pgdatabase
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "ny_taxi"
+    volumes:
+      - "ny_taxi_postgres_data:/var/lib/postgresql"
+    ports:
+      - "5432:5432"
+    networks:
+      - pg-shared-network
+
+  # The pgAdmin Management Service
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: my-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    volumes:
+      - "pgadmin_data:/var/lib/pgadmin"
+    ports:
+      - "8085:80"
+    networks:
+      - pg-shared-network
+    depends_on:
+      - pgdatabase
+
+# Define the shared network and persistent volumes
+networks:
+  pg-shared-network:
+    driver: bridge
+
+volumes:
+  ny_taxi_postgres_data:
+  pgadmin_data:

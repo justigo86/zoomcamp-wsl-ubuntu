@@ -3,7 +3,7 @@ FROM python:3.13.11-slim
 # FROM python:3.13.11-slim
 
 #include uv as a dependency - via from variable
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
 # 2. Set the working directory inside the container
 # WORKDIR /app
@@ -24,7 +24,7 @@ RUN uv sync --locked
 # 5. Copy the rest of your project code - if desired
 # COPY . ./
 # COPY pipeline.py ./ - moved to ingest_data to create table and insert data
-COPY ingest_data.py ./
+COPY ingest_data.py .
 
 # 6. Tell the container which port to let traffic through
 
