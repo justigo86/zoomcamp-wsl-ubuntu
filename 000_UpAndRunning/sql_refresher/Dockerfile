@@ -20,4 +20,4 @@ COPY pipeline.py pipeline.py
 
 # Set entry point
 # ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
-ENTRYPOINT ["python", "pipeline.py"]
+ENTRYPOINT ["python", "ingest_zone_data.py"]
