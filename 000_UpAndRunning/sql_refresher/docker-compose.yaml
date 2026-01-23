@@ -8,11 +8,11 @@ services:
       POSTGRES_PASSWORD: "root"
       POSTGRES_DB: "ny_taxi"
     volumes:
-      - "ny_taxi_postgres_data:/var/lib/postgresql"
+      - "taxi_zone_data:/var/lib/postgresql"
     ports:
       - "5432:5432"
     networks:
-      - pg-shared-network
+      - pg-net
 
   # The pgAdmin Management Service
   pgadmin:
@@ -26,7 +26,7 @@ services:
     ports:
       - "8085:80"
     networks:
-      - pg-shared-network
+      - pg-net
     depends_on:
       - pgdatabase
 
@@ -42,13 +42,13 @@ services:
   #     - PG_PORT=5432
   #     - TARGET_TABLE=zones
   #   networks:
-  #     - pg-shared-network
+  #     - pg-net
 
 # Define the shared network and persistent volumes
 networks:
-  pg-shared-network:
+  pg-net:
     driver: bridge
 
 volumes:
-  ny_taxi_postgres_data:
+  taxi_zone_data:
   pgadmin_data:
