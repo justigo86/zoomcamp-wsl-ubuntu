@@ -54,34 +54,23 @@ volumes:
 ```
 
 **What is the hostname and port that pgadmin should use to connect to the postgres database?**
+**Answer:**
 db:5432
 Explanation:
 - db is the service name of the pg database container
 - 5432 is the internal port of the postgres container
 
 
-## Environment Setup for questions 3-6
-pg database container:
-```bash
-docker run -it --rm \
-  -e POSTGRES_USER="root" \
-  -e POSTGRES_PASSWORD="root" \
-  -e POSTGRES_DB="green_taxi_trips" \
-  -v ny_taxi_postgres_data:/var/lib/postgresql \
-  -p 5432:5432 \
-  --network=pg-network \
-  --name pgdatabase \
-  postgres:18
+## After environment Setup for questions 3-6
+## Question 3. Counting short trips
+**For the trips in November 2025 (lpep_pickup_datetime between '2025-11-01' and '2025-12-01', exclusive of the upper bound), how many trips had a trip_distance of less than or equal to 1 mile?**
+
+**Commands:**
+```sql
+SELECT COUNT(1) FROM green_taxi_data WHERE lpep_pi
+ ckup_datetime >= '2025-11-01' AND lpep_pickup_datetime < '2025-12-01' AND
+   trip_distance <= 1;
 ```
 
-pgadmin container:
-```bash
-docker run -it --rm \
-  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
-  -e PGADMIN_DEFAULT_PASSWORD="root" \
-  -v pgadmin_data:/var/lib/pgadmin \
-  -p 8085:80 \
-  --name my-pgadmin \
-  --network pg-network \
-  dpage/pgadmin4
-```
+**Answer:**
+8007
