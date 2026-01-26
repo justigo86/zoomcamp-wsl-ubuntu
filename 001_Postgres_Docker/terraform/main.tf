@@ -8,13 +8,14 @@ terraform {
 }
 
 provider "google" {
-  project = "zoomcamp-m1-terraform"
-  region  = "us-central1"
+  credentials = file(var.credentials)
+  project     = var.project
+  region      = var.region
 }
 
 resource "google_storage_bucket" "tf-demo-bucket" {
-  name          = "zoomcamp-m1-terraform-tf-demo-bucket"
-  location      = "US"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
 
   lifecycle_rule {
@@ -25,4 +26,10 @@ resource "google_storage_bucket" "tf-demo-bucket" {
       type = "AbortIncompleteMultipartUpload"
     }
   }
+}
+
+
+resource "google_bigquery_dataset" "tf_demo_dataset" {
+  dataset_id = var.bq_dataset_name
+  location   = var.location
 }
