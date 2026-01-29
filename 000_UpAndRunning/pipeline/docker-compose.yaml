@@ -11,8 +11,11 @@ services:
       - "ny_taxi_postgres_data:/var/lib/postgresql"
     ports:
       - "5432:5432"
-    networks:
-      - pg-shared-network
+    # networks:
+    #   - pg-shared-network
+    depends_on:
+      kestra:
+        condition: service_started
 
   # The pgAdmin Management Service
   pgadmin:
@@ -21,14 +24,15 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
       PGADMIN_DEFAULT_PASSWORD: "root"
-    volumes:
-      - "pgadmin_data:/var/lib/pgadmin"
+    # volumes:
+    #   - "pgadmin_data:/var/lib/pgadmin"
     ports:
       - "8085:80"
-    networks:
-      - pg-shared-network
+    # networks:
+    #   - pg-shared-network
     depends_on:
-      - pgdatabase
+      pgdatabase:
+        condition: service_started
 
   kestra_postgres:
     image: postgres:18
@@ -109,13 +113,15 @@ services:
   #     - --chunksize=100000
 
 # Define the shared network and persistent volumes
-networks:
-  pg-shared-network:
-    driver: bridge
+# networks:
+#   pg-shared-network:
+#     driver: bridge
 
 volumes:
   ny_taxi_postgres_data:
-  pgadmin_data:
+    driver: local
+  # pgadmin_data:
+  #   driver: local
   kestra_postgres_data:
     driver: local
   kestra_data:
