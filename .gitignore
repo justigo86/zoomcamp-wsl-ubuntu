@@ -1,5 +1,6 @@
 # Ignore sensitive environment variables
 .env
+*.env
 
 # Ignore large data volumes (adjust names to your project)
 /data
