@@ -1,6 +1,5 @@
 # Data Engineering Zoomcamp 2026
-# Module 2: Workflow Orchestration with Kestra
-# Module 2 Homework
+# Module 2 Homework: Workflow Orchestration with Kestra
 
 
 ## Question 1.
@@ -16,7 +15,7 @@ After running 08_gcp_taxi.yaml with taxi=yellow, year=2020, month=12 inputs:
 1. Checked Kestra UI under Executions => zoomcamp.08_gcp_taxi => Ouutputs => extract => outputFiles => yellow_tripdata_2020-12.csv.
 2. Checked GCS Cloud Storage -> Buckets => [my_bucket_name] => yellow_tripdata_2020-12.csv has size of 134.5MB - converts to 128.3 MiB.
 
-**Answer:**
+**ANSWER:**
 128.3 MiB
 
 
@@ -33,7 +32,7 @@ variables:
   file: "{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv"
 - updated to answer with "{{render(vars.file)}}"
 
-**Answer:**
+**ANSWER:**
 green_tripdata_2020-04.csv
 
 
@@ -52,7 +51,7 @@ FROM `zoomcamp-m2-kestra.zoomcamp.yellow_tripdata`
 WHERE filename LIKE 'yellow_tripdata_2020%';
 ```
 
-**Answer:**
+**ANSWER:**
 24,648,499
 
 
@@ -71,7 +70,7 @@ FROM `zoomcamp-m2-kestra.zoomcamp.green_tripdata`
 WHERE filename LIKE 'green_tripdata_2020%';
 ```
 
-**Answer:**
+**ANSWER:**
 1,734,051
 
 
@@ -90,7 +89,7 @@ FROM `zoomcamp-m2-kestra.zoomcamp.yellow_tripdata`
 WHERE filename LIKE 'yellow_tripdata_2021-03.csv';
 ```
 
-**Answer:**
+**ANSWER:**
 1,925,152
 
 ## Question 6.
@@ -103,5 +102,5 @@ WHERE filename LIKE 'yellow_tripdata_2021-03.csv';
 **Solution:**
 https://kestra.io/docs/workflow-components/triggers/schedule-trigger
 
-**Answer:**
+**ANSWER:**
 Add a timezone property set to America/New_York in the Schedule trigger configuration

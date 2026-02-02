@@ -17,7 +17,7 @@ docker run -it --rm --entrypoint=bash python:3.13
 pip -V
 ```
 
-**Answer:**
+**ANSWER:**
 25.3
 
 
@@ -55,7 +55,7 @@ volumes:
 
 **What is the hostname and port that pgadmin should use to connect to the postgres database?**
 
-**Answer:**
+**ANSWER:**
 db:5432
 
 Explanation:
@@ -76,7 +76,7 @@ AND lpep_pickup_datetime < '2025-12-01'
 AND trip_distance <= 1;
 ```
 
-**Answer:**
+**ANSWER:**
 8007
 
 ## Question 4. Longest trip for each day
@@ -92,7 +92,7 @@ ORDER BY trip_distance DESC
 LIMIT 1;
 ```
 
-**Answer:**
+**ANSWER:**
 2025-11-14
 
 ## Question 5. Biggest pickup zone
@@ -110,7 +110,7 @@ ORDER BY SUM(gtd.total_amount) DESC
 LIMIT 1;
 ```
 
-**Answer:**
+**ANSWER:**
 East Harlem North
 
 ## Question 6. Largest tip
@@ -130,7 +130,7 @@ ORDER BY gtd.tip_amount DESC
 LIMIT 1;
 ```
 
-**Answer:**
+**ANSWER:**
 Yorkville West
 
 ## Question 7. Terraform Workflow
@@ -139,5 +139,5 @@ Yorkville West
 2. Generating proposed changes and auto-executing the plan
 3. Remove all resources managed by terraform`
 
-**Answer:**
+**ANSWER:**
 terraform init, terraform apply -auto-approve, terraform destroy
