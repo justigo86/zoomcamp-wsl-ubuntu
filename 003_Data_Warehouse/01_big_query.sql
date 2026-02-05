@@ -35,41 +35,41 @@ PARTITION BY
 SELECT * FROM zoomcamp-m2-kestra.zoomcamp.external_yellow_tripdata;
 
 -- Impact of partition
--- Scanning 1.6GB of data
+-- Scanning 1.6GB of data - non-partitioned
 SELECT DISTINCT(VendorID)
 -- FROM taxi-rides-ny.nytaxi.yellow_tripdata_non_partitioned
 FROM zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_non_partitioned
 WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2019-06-30';
 
--- Scanning ~106 MB of DATA
+-- Scanning ~106 MB of DATA - partitioned
 SELECT DISTINCT(VendorID)
 -- FROM taxi-rides-ny.nytaxi.yellow_tripdata_partitioned
 FROM zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_partitioned
 WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2019-06-30';
 
--- Let's look into the partitions
+-- Let's look into the partitions - shows if partitions are unevenly distributed
 SELECT table_name, partition_id, total_rows
 -- FROM `nytaxi.INFORMATION_SCHEMA.PARTITIONS`
 FROM `zoomcamp.INFORMATION_SCHEMA.PARTITIONS`
 WHERE table_name = 'yellow_tripdata_partitioned'
 ORDER BY total_rows DESC;
 
--- Creating a partition and cluster table
+-- Creating a partition and cluster table from external table
 -- CREATE OR REPLACE TABLE taxi-rides-ny.nytaxi.yellow_tripdata_partitioned_clustered
 CREATE OR REPLACE TABLE zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_partitioned_clustered
 PARTITION BY DATE(tpep_pickup_datetime)
-CLUSTER BY VendorID AS
+CLUSTER BY VendorID AS --cluster
 -- SELECT * FROM taxi-rides-ny.nytaxi.external_yellow_tripdata;
 SELECT * FROM zoomcamp-m2-kestra.zoomcamp.external_yellow_tripdata;
 
--- Query scans 1.1 GB
+-- Query scans 1.1 GB - only partitioned
 SELECT count(*) as trips
 -- FROM taxi-rides-ny.nytaxi.yellow_tripdata_partitioned
 FROM zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_partitioned
 WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2020-12-31'
   AND VendorID=1;
 
--- Query scans 864.5 MB
+-- Query scans 864.5 MB - partitioned and clustered
 SELECT count(*) as trips
 -- FROM taxi-rides-ny.nytaxi.yellow_tripdata_partitioned_clustered
 FROM zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_partitioned_clustered
