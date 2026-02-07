@@ -31,11 +31,11 @@ CREATE OR REPLACE TABLE `zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_ml` (
     -- takes multiple minutes to build
 -- CREATE OR REPLACE MODEL `taxi-rides-ny.nytaxi.tip_model`
 CREATE OR REPLACE MODEL `zoomcamp-m2-kestra.zoomcamp.tip_model`
-OPTIONS
-  (model_type='linear_reg',
-  input_label_cols=['tip_amount'],
-  DATA_SPLIT_METHOD='AUTO_SPLIT') AS
-SELECT * FROM
+OPTIONS      -- define the 'brain' of the model
+  (model_type='linear_reg',     -- required - specify type of model
+  input_label_cols=['tip_amount'],     -- required - specify the column to predict
+  DATA_SPLIT_METHOD='AUTO_SPLIT') AS       -- optional - specify how to split data for training and evaluation
+SELECT * FROM      -- create the training data for the model - pull data and feed it to model
   -- `taxi-rides-ny.nytaxi.yellow_tripdata_ml`
   `zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_ml`
 WHERE
@@ -44,13 +44,15 @@ WHERE
 -- CHECK FEATURES - provided by BQ for the created model
 -- SELECT * FROM ML.FEATURE_INFO(MODEL `taxi-rides-ny.nytaxi.tip_model`);
 SELECT * FROM ML.FEATURE_INFO(MODEL `zoomcamp-m2-kestra.zoomcamp.tip_model`);
+  -- feature info provided by BQ - shows the features used for training the model and their types
 
--- EVALUATE THE MODEL
+-- EVALUATE THE MODEL - like a practice test
+  -- compare predicted values from model against the actual values
 SELECT * FROM
   -- ML.EVALUATE(MODEL `taxi-rides-ny.nytaxi.tip_model`,
   ML.EVALUATE(MODEL `zoomcamp-m2-kestra.zoomcamp.tip_model`,
 (
-  SELECT * FROM
+  SELECT * FROM     -- evaluation data fed to the model
   -- `taxi-rides-ny.nytaxi.yellow_tripdata_ml`
   `zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_ml`
   WHERE tip_amount IS NOT NULL
