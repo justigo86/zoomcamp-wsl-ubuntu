@@ -12,3 +12,33 @@ export GOOGLE_APPLICATION_CREDENTIALS="[path_to_module_homework_directory]/terra
 ```
 Lastly, ran terraform init/plan/apply to create the infrastructure and upload data.
 
+## BigQuery Setup
+Create an external table using the Yellow Taxi Trip Records.
+```sql
+CREATE OR REPLACE EXTERNAL TABLE `zoomcamp-m3-bq.m3_bq_hw_dataset.external_yellow_tripdata`
+OPTIONS (
+  format = 'PARQUET',
+  uris = ['gs://zoomcamp-m3-bq-bucket1674/yellow_tripdata_2024-*.parquet']
+);
+```
+
+Create a (regular/materialized) table in BQ using the Yellow Taxi Trip Records (do not partition or cluster this table).
+```sql
+CREATE OR REPLACE TABLE `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized` AS
+SELECT * FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.external_yellow_tripdata`;
+```
+
+## Question 1. Counting records
+**What is count of records for the 2024 Yellow Taxi Data?**
+- 65,623
+- 840,402
+- 20,332,093
+- 85,431,289
+
+**Commands:**
+```sql
+SELECT COUNT(1) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
+```
+
+**ANSWER:**
+20,332,093
