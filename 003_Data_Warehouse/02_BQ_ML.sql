@@ -58,12 +58,12 @@ SELECT * FROM
   WHERE tip_amount IS NOT NULL
 ));
 
--- PREDICT THE MODEL
+-- PREDICT THE MODEL - used to make guesses on new data
 SELECT * FROM
   -- ML.PREDICT(MODEL `taxi-rides-ny.nytaxi.tip_model`,
   ML.PREDICT(MODEL `zoomcamp-m2-kestra.zoomcamp.tip_model`,
 (
-  SELECT * FROM
+  SELECT * FROM   -- new data set fed to model to make predictions
   -- `taxi-rides-ny.nytaxi.yellow_tripdata_ml`
   `zoomcamp-m2-kestra.zoomcamp.yellow_tripdata_ml`
   WHERE tip_amount IS NOT NULL
