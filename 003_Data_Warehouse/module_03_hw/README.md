@@ -6,6 +6,7 @@ Used Terraform to create a GCS bucket (1), run load_yellow_taxi_data.py to uploa
 1. resource "google_storage_bucket" "m3-bq-hw-bucket"
 2. resource "null_resource" "upload_data"
 3. resource "google_bigquery_dataset" "m3-bq-hw-dataset"
+
 Then set credentials using the following command:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS="[path_to_module_homework_directory]/terraform/keys/my-creds.json"
@@ -142,6 +143,7 @@ SELECT COUNT(DISTINCT VendorID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tri
 
 **Answer:**
 GCP Bucket
+
 **Explanation:**
 Data is not read from its own internal DB, it reaches out to a source, in this case, the GCP bucket.
 
@@ -152,6 +154,7 @@ Data is not read from its own internal DB, it reaches out to a source, in this c
 
 **Answer:**
 False
+
 **Explanation:**
 While clustering can be beneficial, for things like performance/cost, it's not always necessary. 
 
