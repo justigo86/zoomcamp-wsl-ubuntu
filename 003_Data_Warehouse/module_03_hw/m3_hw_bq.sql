@@ -26,3 +26,16 @@ SELECT PULocationID, DOLocationID FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_t
 
 -- Q4: How many records have a fare_amount of 0?
 SELECT COUNT(1) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized` WHERE fare_amount  = 0;
+
+-- Q5: Partition by tpep_dropoff_datetime and Cluster on VendorID
+CREATE OR REPLACE TABLE `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_partitioned_clustered`
+PARTITION BY DATE(tpep_dropoff_datetime)
+CLUSTER BY VendorID AS
+SELECT * FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
+
+-- Q6: Write a query to retrieve the distinct VendorIDs between tpep_dropoff_datetime 2024-03-01 and 2024-03-15 (inclusive)
+SELECT COUNT(DISTINCT VendorID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized` WHERE DATE(tpep_dropoff_datetime) BETWEEN '2024-03-01' AND '2024-03-15';
+SELECT COUNT(DISTINCT VendorID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_partitioned_clustered` WHERE DATE(tpep_dropoff_datetime) BETWEEN '2024-03-01' AND '2024-03-15';
+
+-- Q9: Write a SELECT count(*) query FROM the materialized table you created. How many bytes does it estimate will be read? Why?
+SELECT COUNT(*) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;

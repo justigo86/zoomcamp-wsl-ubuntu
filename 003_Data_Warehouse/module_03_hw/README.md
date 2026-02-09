@@ -35,7 +35,7 @@ SELECT * FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.external_yellow_tripdata`;
 - 20,332,093
 - 85,431,289
 
-**Commands:**
+**Command:**
 ```sql
 SELECT COUNT(1) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
 ```
@@ -55,7 +55,9 @@ SELECT COUNT(1) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materializ
 
 **Commands:**
 ```sql
+-- 1 - external:
 SELECT COUNT(DISTINCT PULocationID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.external_yellow_tripdata`;
+-- 2 - materialized:
 SELECT COUNT(DISTINCT PULocationID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
 ```
 
@@ -71,7 +73,9 @@ SELECT COUNT(DISTINCT PULocationID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow
 
 **Commands:**
 ```sql
+-- 1 - PULocationID:
 SELECT PULocationID FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
+-- 2 - PULocationID and DOLocationID
 SELECT PULocationID, DOLocationID FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
 ```
 
@@ -85,9 +89,79 @@ BigQuery is a columnar database, and it only scans the specific columns requeste
 - 20,188,016
 - 8,333
 
-**Commands:**
+**Command:**
 ```sql
 SELECT COUNT(1) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized` WHERE fare_amount  = 0;
 ```
 **Answer:**
 8,333
+
+## Question 5. Partitioning and clustering
+**What is the best strategy to make an optimized table in Big Query if your query will always filter based on tpep_dropoff_datetime and order the results by VendorID (Create a new table with this strategy)**
+- Partition by tpep_dropoff_datetime and Cluster on VendorID
+- Cluster on by tpep_dropoff_datetime and Cluster on VendorID
+- Cluster on tpep_dropoff_datetime Partition by VendorID
+- Partition by tpep_dropoff_datetime and Partition by VendorID
+
+**Command:**
+```sql
+CREATE OR REPLACE TABLE `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_partitioned_clustered`
+PARTITION BY DATE(tpep_dropoff_datetime)
+CLUSTER BY VendorID AS
+SELECT * FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
+```
+
+**Answer:**
+Partition by tpep_dropoff_datetime and Cluster on VendorID
+
+## Question 6. Partition benefits
+**Write a query to retrieve the distinct VendorIDs between tpep_dropoff_datetime 2024-03-01 and 2024-03-15 (inclusive)**
+**Use the materialized table you created earlier in your from clause and note the estimated bytes. Now change the table in the from clause to the partitioned table you created for question 5 and note the estimated bytes processed. What are these values?**
+- 12.47 MB for non-partitioned table and 326.42 MB for the partitioned table
+- 310.24 MB for non-partitioned table and 26.84 MB for the partitioned table
+- 5.87 MB for non-partitioned table and 0 MB for the partitioned table
+- 310.31 MB for non-partitioned table and 285.64 MB for the partitioned table
+
+**Commands:**
+```sql
+-- 1 - materiablized table:
+SELECT COUNT(DISTINCT VendorID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized` WHERE DATE(tpep_dropoff_datetime) BETWEEN '2024-03-01' AND '2024-03-15';
+-- 2 - paritioned and clustered table:
+SELECT COUNT(DISTINCT VendorID) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_partitioned_clustered` WHERE DATE(tpep_dropoff_datetime) BETWEEN '2024-03-01' AND '2024-03-15';
+```
+
+**Answer:**
+310.24 MB for non-partitioned table and 26.84 MB for the partitioned table
+
+## Question 7. External table storage
+**Where is the data stored in the External Table you created?**
+- Big Query
+- Container Registry
+- GCP Bucket
+- Big Table
+
+**Answer:**
+GCP Bucket
+**Explanation:**
+Data is not read from its own internal DB, it reaches out to a source, in this case, the GCP bucket.
+
+## Question 8. Clustering best practices
+**It is best practice in Big Query to always cluster your data:**
+- True
+- False
+
+**Answer:**
+False
+**Explanation:**
+While clustering can be beneficial, for things like performance/cost, it's not always necessary. 
+
+## Question 9. Understanding table scans
+**Write a SELECT count(*) query FROM the materialized table you created. How many bytes does it estimate will be read? Why?**
+
+**Command:**
+```sql
+SELECT COUNT(*) FROM `zoomcamp-m3-bq.m3_bq_hw_dataset.yellow_tripdata_materialized`;
+```
+
+**Response:**
+'0 B' - Due to being a count query, it's the amount provided by the metadata. 
