@@ -62,5 +62,8 @@ terraform.rc
 # Uncomment the line below if you want to ignore planout files.
 # planout
 
-# To ignore Service Account credential information
+# ignore Service Account credential information
 *.json
+
+# duckdb database
+*.duckdb
