@@ -1,0 +1,24 @@
+[0m23:07:18.279156 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f29f7e54980>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f29f713bda0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f29f8f6a840>]}
+
+
+============================== 23:07:18.291255 | 4d3eda64-1182-4a98-a9bd-65984a316523 ==============================
+[0m23:07:18.291255 [info ] [MainThread]: Running with dbt=1.11.4
+[0m23:07:18.292468 [debug] [MainThread]: running dbt with arguments {'use_colors': 'True', 'send_anonymous_usage_stats': 'True', 'indirect_selection': 'eager', 'partial_parse': 'True', 'write_json': 'True', 'printer_width': '80', 'empty': 'None', 'target_path': 'None', 'profiles_dir': '/home/justigo86/.dbt', 'debug': 'False', 'cache_selected_only': 'False', 'log_format': 'default', 'invocation_command': 'dbt init taxi_rides_ny', 'use_experimental_parser': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'log_path': 'logs', 'warn_error': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'introspect': 'True', 'quiet': 'False', 'static_parser': 'True'}
+[0m23:07:18.321360 [debug] [MainThread]: Starter project path: /home/justigo86/.venv/lib/python3.12/site-packages/dbt/include/starter_project
+[0m23:07:18.338729 [info ] [MainThread]: 
+Your new dbt project "taxi_rides_ny" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m23:07:18.339522 [info ] [MainThread]: Setting up your profile.
