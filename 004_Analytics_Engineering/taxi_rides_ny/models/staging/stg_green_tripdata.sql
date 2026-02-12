@@ -1,7 +1,3 @@
--- SELECT * FROM {{ source( 'raw_data', 'green_tripdata' )}} LIMIT 20;
-
--- FROM {{ source( '[source_name]', '[table_name]' )}}
-
 -- from module 4 project files:
 with source as (
     select * from {{ source('raw_data', 'green_tripdata') }}
