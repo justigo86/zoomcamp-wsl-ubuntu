@@ -1,44 +1,44 @@
--- from module 4 project files:
--- CTE statement assigned to 'source' - pulling data from raw green_tripdata
+-- FROM module 4 project files:
+-- CTE statement ASsigned to 'source' - pulling data FROM raw green_tripdata
     -- dbt best practice - use source or ref calls at top of model files
-with source as (
-    select * from {{ source('raw_data', 'green_tripdata') }}
+WITH source AS (
+    SELECT * FROM {{ source('raw_data', 'green_tripdata') }}
 ),
 
-renamed as (
-    select
+renamed AS (
+    SELECT
         -- identifiers
-        cast(vendorid as integer) as vendor_id,
-        {{ safe_cast('ratecodeid', 'integer') }} as rate_code_id,
-        cast(pulocationid as integer) as pickup_location_id,
-        cast(dolocationid as integer) as dropoff_location_id,
+        CAST(vendorid AS integer) AS vendor_id,
+        {{ safe_cast('ratecodeid', 'integer') }} AS rate_code_id,
+        CAST(pulocationid AS integer) AS pickup_location_id,
+        CAST(dolocationid AS integer) AS dropoff_location_id,
 
         -- timestamps
-        cast(lpep_pickup_datetime as timestamp) as pickup_datetime,  -- lpep = Licensed Passenger Enhancement Program (green taxis)
-        cast(lpep_dropoff_datetime as timestamp) as dropoff_datetime,
+        CAST(lpep_pickup_datetime AS timestamp) AS pickup_datetime,  -- lpep = Licensed PASsenger Enhancement Program (green taxis)
+        CAST(lpep_dropoff_datetime AS timestamp) AS dropoff_datetime,
 
         -- trip info
-        cast(store_and_fwd_flag as string) as store_and_fwd_flag,
-        cast(passenger_count as integer) as passenger_count,
-        cast(trip_distance as numeric) as trip_distance,
-        {{ safe_cast('trip_type', 'integer') }} as trip_type,
+        CAST(store_and_fwd_flag AS string) AS store_and_fwd_flag,
+        CAST(pASsenger_count AS integer) AS pASsenger_count,
+        CAST(trip_distance AS numeric) AS trip_distance,
+        {{ safe_cast('trip_type', 'integer') }} AS trip_type,
 
         -- payment info
-        cast(fare_amount as numeric) as fare_amount,
-        cast(extra as numeric) as extra,
-        cast(mta_tax as numeric) as mta_tax,
-        cast(tip_amount as numeric) as tip_amount,
-        cast(tolls_amount as numeric) as tolls_amount,
-        cast(ehail_fee as numeric) as ehail_fee,
-        cast(improvement_surcharge as numeric) as improvement_surcharge,
-        cast(total_amount as numeric) as total_amount,
-        {{ safe_cast('payment_type', 'integer') }} as payment_type
-    from source
-    -- Filter out records with null vendor_id (data quality requirement)
-    where vendorid is not null
+        CAST(fare_amount AS numeric) AS fare_amount,
+        CAST(extra AS numeric) AS extra,
+        CAST(mta_tax AS numeric) AS mta_tax,
+        CAST(tip_amount AS numeric) AS tip_amount,
+        CAST(tolls_amount AS numeric) AS tolls_amount,
+        CAST(ehail_fee AS numeric) AS ehail_fee,
+        CAST(improvement_surcharge AS numeric) AS improvement_surcharge,
+        CAST(total_amount AS numeric) AS total_amount,
+        {{ safe_cast('payment_type', 'integer') }} AS payment_type
+    FROM source
+    -- Filter out records WITH null vendor_id (data quality requirement)
+    WHERE vendorid IS NOT NULL
 )
 
-select * from renamed
+SELECT * FROM renamed
 
 -- Sample records for dev environment using deterministic date filter
 {% if target.name == 'dev' %}
