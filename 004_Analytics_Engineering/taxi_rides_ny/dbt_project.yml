@@ -4,6 +4,9 @@
 name: 'taxi_rides_ny'
 version: '1.0.0'
 
+# Require a specific dbt version for reproducibility
+require-dbt-version: [">=1.7.0", "<2.0.0"]
+
 # This setting configures which "profile" dbt uses for this project.
 profile: 'taxi_rides_ny'
 
@@ -21,9 +24,11 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
+dispatch:
+  - macro_namespace: dbt_utils
+    search_order: ['dbt_utils', 'dbt']
 
 # In this example config, we tell dbt to build all models in the example/
 # directory as views. These settings can be overridden in the individual model
@@ -33,3 +38,11 @@ models:
     # Config indicated by + and applies to all files under models/example/
     example:
       +materialized: view
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: table
+    marts:
+      +materialized: table
+
+packages-install-path: "dbt_packages"

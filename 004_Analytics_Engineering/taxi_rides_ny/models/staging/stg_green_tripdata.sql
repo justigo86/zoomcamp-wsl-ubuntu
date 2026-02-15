@@ -19,7 +19,7 @@ renamed AS (
 
         -- trip info
         CAST(store_and_fwd_flag AS string) AS store_and_fwd_flag,
-        CAST(pASsenger_count AS integer) AS pASsenger_count,
+        CAST(passenger_count AS integer) AS passenger_count,
         CAST(trip_distance AS numeric) AS trip_distance,
         {{ safe_cast('trip_type', 'integer') }} AS trip_type,
 
