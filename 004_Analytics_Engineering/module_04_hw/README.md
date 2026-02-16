@@ -1,9 +1,6 @@
 # Data Engineering Zoomcamp 2026
 # Homework 4: Analytics Engineering
 
-## Homework Setup
-
-
 ## Question 1. dbt Lineage and Execution
 Given a dbt project with the following structure:
 ```
