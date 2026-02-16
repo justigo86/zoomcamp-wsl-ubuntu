@@ -118,7 +118,14 @@ Create a staging model for the For-Hire Vehicle (FHV) trip data for 2019.
 1. Load the FHV trip data for 2019 into your data warehouse
 2. Create a staging model stg_fhv_tripdata with these requirements:
   - Filter out records where dispatching_base_num IS NULL
-  - Rename fields to match your project's naming conventions (e.g., PUlocationID → pickup_location_id)
+  - Rename fields to match your project's naming conventions (e.g., PUlocationID pickup_location_id)
+
+Additional info about process of adding new staging model:
+- ingested fhv data using new .py file with updated info
+- created fhv staging model with WHERE dispatching_base_num IS NOT NULL
+- updated sources.yml to include fhv changes
+- updated schema.yml to include fhv changes
+- built model using 'dbt build --select stg_fhv_tripdata --target prod'
 
 **What is the count of records in stg_fhv_tripdata?**
 - 42,084,899
@@ -127,6 +134,10 @@ Create a staging model for the For-Hire Vehicle (FHV) trip data for 2019.
 - 44,112,187
 
 **Command:**
+```sql
+SELECT COUNT(*) FROM prod.stg_fhv_tripdata;
+```
 
 **Answer:**
+43,244,693
 
