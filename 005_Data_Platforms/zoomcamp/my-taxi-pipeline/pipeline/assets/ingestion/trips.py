@@ -118,14 +118,13 @@ columns:
 # TODO: Add imports needed for your ingestion (e.g., pandas, requests).
 # - Put dependencies in the nearest `requirements.txt` (this template has one at the pipeline root).
 # Docs: https://getbruin.com/docs/bruin/assets/python
-
+import os
+import json
+import pandas as pd
 
 # TODO: Only implement `materialize()` if you are using Bruin Python materialization.
 # If you choose the manual-write approach (no `materialization:` block), remove this function and implement ingestion
 # as a standard Python script instead.
-import os
-import json
-import pandas as pd
 
 def materialize():
     # Bruin automatically injects these environment variables
