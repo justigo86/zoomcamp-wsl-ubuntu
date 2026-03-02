@@ -1,0 +1,18 @@
+api_description: "NYC Yellow Taxi trip dataset containing records of individual taxi trips in New York City."
+auth_info:
+  - "No authentication required (Public API)"
+possible_base_urls:
+  - "https://us-central1-dlthub-analytics.cloudfunctions.net"
+possible_endpoints:
+  - path: "/data_engineering_zoomcamp_api"
+    method: "GET"
+    description: "Returns a list of NYC Yellow Taxi trip records."
+    parameters:
+      - name: "page"
+        type: "query"
+        description: "The page number to retrieve, starting from 1."
+    pagination:
+      strategy: "page_number"
+      page_size: 1000
+      stop_condition: "empty_response"
+      details: "Increment the 'page' parameter by 1 for each request. Stop when the API returns an empty list []."
