@@ -6,6 +6,7 @@
 /data
 /db_data
 /volumes
+*.csv.gz
 
 # Ignore OS-specific files
 .DS_Store
