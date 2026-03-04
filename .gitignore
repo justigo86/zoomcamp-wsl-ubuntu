@@ -8,6 +8,8 @@
 /volumes
 *.csv.gz
 *.csv
+#parquet
+*.crc
 
 # Ignore OS-specific files
 .DS_Store
