@@ -1,3 +1,5 @@
+import types
+
 types.StructType([
   types.StructField('hvfhs_license_num', types.StringType(), True),
   types.StructField('dispatching_base_num', types.StringType(), True),
