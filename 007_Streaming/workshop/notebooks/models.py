@@ -22,8 +22,14 @@ def ride_from_row(row):
         tpep_pickup_datetime=int(row['tpep_pickup_datetime'].timestamp() * 1000),
     )
 
-# function to incorporate dataclasses directly
+# serialize code for use in kafka
 def ride_serializer(ride):
     ride_dict = dataclasses.asdict(ride)
     json_str = json.dumps(ride_dict)
     return json_str.encode('utf-8')
+
+# deserialize to decode incoming data
+def ride_deserializer(data):
+    json_str = data.decode('utf-8')
+    ride_dict = json.loads(json_str)
+    return Ride(**ride_dict)
