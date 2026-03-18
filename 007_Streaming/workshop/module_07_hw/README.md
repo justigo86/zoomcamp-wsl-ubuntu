@@ -180,3 +180,129 @@ Count how many trips have a `trip_distance` greater than 5.0 kilometers.
 ```text
  Number of trips greater than 5.0km: 8506
 ```
+
+## Part 2: PyFlink (Questions 4-6)
+
+For the PyFlink questions, you'll adapt the workshop code to work with
+the green taxi data. The key differences from the workshop:
+
+- Topic name: `green-trips` (instead of `rides`)
+- Datetime columns use `lpep_` prefix (instead of `tpep_`)
+- You'll need to handle timestamps as strings (not epoch milliseconds)
+
+You can convert string timestamps to Flink timestamps in your source DDL:
+
+```sql
+lpep_pickup_datetime VARCHAR,
+event_timestamp AS TO_TIMESTAMP(lpep_pickup_datetime, 'yyyy-MM-dd HH:mm:ss'),
+WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
+```
+
+Before running the Flink jobs, create the necessary PostgreSQL tables
+for your results.
+
+## Question 4. Tumbling window - pickup location
+Create a Flink job that reads from `green-trips` and uses a 5-minute
+tumbling window to count trips per `PULocationID`.
+
+Write the results to a PostgreSQL table with columns:
+`window_start`, `PULocationID`, `num_trips`.
+
+After the job processes all data, query the results:
+
+```sql
+SELECT PULocationID, num_trips
+FROM q4_events
+ORDER BY num_trips DESC
+LIMIT 3;
+```
+
+**Which `PULocationID` had the most trips in a single 5-minute window?**
+- 42
+- 74
+- 75
+- 166
+
+**ANSWER:**
+74
+
+**Explanation:**
+```text
++--------------+-----------+
+| pulocationid | num_trips |
+|--------------+-----------|
+| 74           | 15        |
+| 74           | 14        |
+| 74           | 13        |
++--------------+-----------+
+```
+
+## Question 5. Session window - longest streak
+
+Create another Flink job that uses a session window with a 5-minute gap
+on `PULocationID`, using `lpep_pickup_datetime` as the event time
+with a 5-second watermark tolerance.
+
+A session window groups events that arrive within 5 minutes of each other.
+When there's a gap of more than 5 minutes, the window closes.
+
+Write the results to a PostgreSQL table and find the `PULocationID`
+with the longest session (most trips in a single session).
+
+**How many trips were in the longest session?**
+- 12
+- 31
+- 51
+- 81
+
+**Query:**
+```sql
+SELECT * FROM q5_events ORDER BY num_trips DESC LIMI
+ T 3;
+ ```
+
+ **ANSWER:**
+ 81
+
+ **Explanation:**
+ ```text
+ +---------------------+---------------------+--------------+-----------+
+| window_start        | window_end          | pulocationid | num_trips |
+|---------------------+---------------------+--------------+-----------|
+| 2025-10-08 06:46:14 | 2025-10-08 08:27:40 | 74           | 81        |
+| 2025-10-01 06:52:23 | 2025-10-01 08:23:33 | 74           | 72        |
+| 2025-10-22 06:58:31 | 2025-10-22 08:25:04 | 74           | 71        |
++---------------------+---------------------+--------------+-----------+
+```
+
+
+## Question 6. Tumbling window - largest tip
+
+Create a Flink job that uses a 1-hour tumbling window to compute the
+total `tip_amount` per hour (across all locations).
+
+**Which hour had the highest total tip amount?**
+- 2025-10-01 18:00:00
+- 2025-10-16 18:00:00
+- 2025-10-22 08:00:00
+- 2025-10-30 16:00:00
+
+**Query:**
+```sql
+SELECT * FROM q6_events ORDER BY tip_total DESC LIMI
+ T 3;
+ ```
+
+**ANSWER:**
+2025-10-16 18:00:00
+
+**Explanation:**
+```text
++---------------------+---------------------+--------------------+
+| window_start        | window_end          | tip_total          |
+|---------------------+---------------------+--------------------|
+| 2025-10-16 18:00:00 | 2025-10-16 19:00:00 | 510.8599999999999  |
+| 2025-10-16 17:00:00 | 2025-10-16 18:00:00 | 445.01000000000005 |
+| 2025-10-24 17:00:00 | 2025-10-24 18:00:00 | 433.31             |
++---------------------+---------------------+--------------------+
+```
