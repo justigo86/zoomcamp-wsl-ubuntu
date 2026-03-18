@@ -21,10 +21,11 @@ docker exec -it workshop-redpanda-1 rpk version
 **What version of Redpanda are you running?**
 
 ### ANSWER:
-**v25.3.9**
-  
-  
-  
+```text
+v25.3.9
+```
+<br/>
+<br/>
 
 ## Question 2. Sending data to Redpanda
 Create a topic called `green-trips`:
@@ -106,17 +107,17 @@ print(f'took {(t1 - t0):.2f} seconds')
 - 120 seconds
 - 300 seconds
 
-### ANSWER:
-**10 seconds**
-
 **Explanation:**
 ```text
 took 17.45 seconds
 ```
-  
-  
-  
 
+### ANSWER:
+```text
+10 seconds
+```
+<br/>
+<br/>
 ## Question 3. Consumer - trip distance
 
 Write a Kafka consumer that reads all messages from the `green-trips` topic (set `auto_offset_reset='earliest'`).
@@ -179,16 +180,17 @@ Count how many trips have a `trip_distance` greater than 5.0 kilometers.
 - 8506
 - 9506
 
-### ANSWER:
-**8506**
-
 **Explanation:**
 ```text
  Number of trips greater than 5.0km: 8506
 ```
-  
-  
-  
+
+### ANSWER:
+```text
+8506
+```
+<br/>
+<br/>
 
 ## Part 2: PyFlink (Questions 4-6)
 
@@ -209,9 +211,8 @@ WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
 
 Before running the Flink jobs, create the necessary PostgreSQL tables
 for your results.
-  
-  
-  
+<br/>
+<br/>
 
 ## Question 4. Tumbling window - pickup location
 Create a Flink job that reads from `green-trips` and uses a 5-minute
@@ -235,9 +236,6 @@ LIMIT 3;
 - 75
 - 166
 
-### ANSWER:
-**74**
-
 **Explanation:**
 ```text
 +--------------+-----------+
@@ -248,9 +246,13 @@ LIMIT 3;
 | 74           | 13        |
 +--------------+-----------+
 ```
-  
-  
-  
+
+### ANSWER:
+```text
+74
+```
+<br/>
+<br/>
 
 ## Question 5. Session window - longest streak
 
@@ -276,9 +278,6 @@ SELECT * FROM q5_events ORDER BY num_trips DESC LIMI
  T 3;
  ```
 
-### ANSWER:
- **81**
-
  **Explanation:**
  ```text
  +---------------------+---------------------+--------------+-----------+
@@ -289,8 +288,13 @@ SELECT * FROM q5_events ORDER BY num_trips DESC LIMI
 | 2025-10-22 06:58:31 | 2025-10-22 08:25:04 | 74           | 71        |
 +---------------------+---------------------+--------------+-----------+
 ```
-  
 
+### ANSWER:
+ ```text
+81
+```
+<br/>
+<br/>
 
 ## Question 6. Tumbling window - largest tip
 
@@ -309,9 +313,6 @@ SELECT * FROM q6_events ORDER BY tip_total DESC LIMI
  T 3;
  ```
 
-### ANSWER:
-**2025-10-16 18:00:00**
-
 **Explanation:**
 ```text
 +---------------------+---------------------+--------------------+
@@ -321,4 +322,9 @@ SELECT * FROM q6_events ORDER BY tip_total DESC LIMI
 | 2025-10-16 17:00:00 | 2025-10-16 18:00:00 | 445.01000000000005 |
 | 2025-10-24 17:00:00 | 2025-10-24 18:00:00 | 433.31             |
 +---------------------+---------------------+--------------------+
+```
+
+### ANSWER:
+```text
+2025-10-16 18:00:00
 ```
