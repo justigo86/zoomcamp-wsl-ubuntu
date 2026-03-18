@@ -11,6 +11,8 @@ docker compose down -v
 docker compose build
 docker compose up -d
 ```
+<br/>
+<br/>
 
 ## Question 1. Redpanda version
 Run `rpk version` inside the Redpanda container:
@@ -118,6 +120,7 @@ took 17.45 seconds
 ```
 <br/>
 <br/>
+
 ## Question 3. Consumer - trip distance
 
 Write a Kafka consumer that reads all messages from the `green-trips` topic (set `auto_offset_reset='earliest'`).
