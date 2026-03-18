@@ -20,8 +20,11 @@ docker exec -it workshop-redpanda-1 rpk version
 
 **What version of Redpanda are you running?**
 
-**ANSWER:**
-v25.3.9
+### ANSWER:
+**v25.3.9**
+  
+  
+  
 
 ## Question 2. Sending data to Redpanda
 Create a topic called `green-trips`:
@@ -103,13 +106,16 @@ print(f'took {(t1 - t0):.2f} seconds')
 - 120 seconds
 - 300 seconds
 
-**ANSWER:**
-10 seconds
+### ANSWER:
+**10 seconds**
 
 **Explanation:**
 ```text
 took 17.45 seconds
 ```
+  
+  
+  
 
 ## Question 3. Consumer - trip distance
 
@@ -173,13 +179,16 @@ Count how many trips have a `trip_distance` greater than 5.0 kilometers.
 - 8506
 - 9506
 
-**ANSWER:**
-8506
+### ANSWER:
+**8506**
 
 **Explanation:**
 ```text
  Number of trips greater than 5.0km: 8506
 ```
+  
+  
+  
 
 ## Part 2: PyFlink (Questions 4-6)
 
@@ -200,6 +209,9 @@ WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
 
 Before running the Flink jobs, create the necessary PostgreSQL tables
 for your results.
+  
+  
+  
 
 ## Question 4. Tumbling window - pickup location
 Create a Flink job that reads from `green-trips` and uses a 5-minute
@@ -223,8 +235,8 @@ LIMIT 3;
 - 75
 - 166
 
-**ANSWER:**
-74
+### ANSWER:
+**74**
 
 **Explanation:**
 ```text
@@ -236,6 +248,9 @@ LIMIT 3;
 | 74           | 13        |
 +--------------+-----------+
 ```
+  
+  
+  
 
 ## Question 5. Session window - longest streak
 
@@ -261,8 +276,8 @@ SELECT * FROM q5_events ORDER BY num_trips DESC LIMI
  T 3;
  ```
 
- **ANSWER:**
- 81
+### ANSWER:
+ **81**
 
  **Explanation:**
  ```text
@@ -274,6 +289,7 @@ SELECT * FROM q5_events ORDER BY num_trips DESC LIMI
 | 2025-10-22 06:58:31 | 2025-10-22 08:25:04 | 74           | 71        |
 +---------------------+---------------------+--------------+-----------+
 ```
+  
 
 
 ## Question 6. Tumbling window - largest tip
@@ -293,8 +309,8 @@ SELECT * FROM q6_events ORDER BY tip_total DESC LIMI
  T 3;
  ```
 
-**ANSWER:**
-2025-10-16 18:00:00
+### ANSWER:
+**2025-10-16 18:00:00**
 
 **Explanation:**
 ```text
