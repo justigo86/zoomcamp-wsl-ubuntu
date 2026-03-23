@@ -5,7 +5,7 @@ variable "credentials" {
 
 variable "project" {
   description = "Project"
-  default     = "zoomcamp-final-project"
+  default     = "zoomcamp-final-project-491003"
 }
 
 variable "region" {

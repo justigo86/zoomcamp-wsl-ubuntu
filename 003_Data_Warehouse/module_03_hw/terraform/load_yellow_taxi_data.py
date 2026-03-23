@@ -1,5 +1,4 @@
 import os
-import sys
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from google.cloud import storage
