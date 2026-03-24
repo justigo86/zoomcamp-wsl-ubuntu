@@ -3,7 +3,6 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 from google.cloud import storage
 import glob
 
-# 1. Configuration
 DATASET_NAME = "mayureshkoli/police-deaths-in-usa-from-1791-to-2022"
 LOCAL_PATH = "./data"
 GCS_BUCKET_NAME = "zoomcamp-proj-bq-bucket0326"
