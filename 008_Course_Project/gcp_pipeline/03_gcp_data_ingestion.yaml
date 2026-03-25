@@ -1,20 +1,11 @@
 id: 03_data_ingestion
 namespace: zoomcamp
 
-variables:
-  file: "{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv"
-  #gcp_file in place of staging_file - gcs=google cloud storage
-  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.file}}"
-  #gcp bigQuery dataset table in place of postgres table
-  table: "{{kv('GCP_DATASET')}}.{{inputs.taxi}}_tripdata_{{inputs.year}}_{{inputs.month}}"
-  data: "{{outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ inputs.year ~ '-' ~ inputs.month ~ '.csv']}}"
-
-
 tasks:
   - id: extract_from_kaggle
     type: io.kestra.plugin.scripts.python.Commands
     description: Downloading dataset from Kaggle
-    containerImage: python:3.11-slim
+    containerImage: python:3.12-slim
     beforeCommands:
       - pip install kaggle
     commands:
@@ -27,17 +18,18 @@ tasks:
       - kaggle datasets download -d mayureshkoli/police-deaths-in-usa-from-1791-to-2022 --unzip -p {{ workingDir }}/data
       # Let's find the filename dynamically so the next task knows what to grab
       - ls {{ workingDir }}/data/*.csv > {{ workingDir }}/filename.txt
+    outputFiles:
+      - "data/*.csv"
 
-# SORT OUT
-  - id: upload_to_gcs
-    type: io.kestra.plugin.gcp.gcs.Upload
-    # This uses a Kestra variable to find the first CSV file produced by the previous task
-    from: "{{ outputs.extract_from_kaggle.outputFiles | values | first }}"
-    bucket: "your-terraform-bucket-name"
-    destination: "raw/police_deaths_1791_2022.csv"
-    serviceAccount: "/app/gcp-creds.json"
-    project: "your-project-id"
-
+  - id: upload_files
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ outputs.extract_from_kaggle.outputFiles | values }}"
+    tasks:
+    - id: upload_to_gcs
+      type: io.kestra.plugin.gcp.gcs.Upload
+      from: "{{ taskrun.value }}"
+      # This dynamically names the file in GCS based on its original name
+      to: "gs://{{ kv('GCP_BUCKET_NAME') }}/kestra_raw/{{ taskrun.value | split('/') | last }}"
 
 # pluginDefaults for GCP credentials and settings - completely changed from postgres setup
 pluginDefaults:

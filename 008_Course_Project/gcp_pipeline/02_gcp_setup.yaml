@@ -7,6 +7,11 @@ tasks:
     ifExists: SKIP
     storageClass: REGIONAL
     name: "{{kv('GCP_BUCKET_NAME')}}" # make sure it's globally unique!
+    lifecycleRules:
+      - action:
+          type: ABORT_INCOMPLETE_MULTIPART_UPLOAD
+        condition:
+          age: 90        # 90 days
 
   - id: create_bq_dataset
     type: io.kestra.plugin.gcp.bigquery.CreateDataset
