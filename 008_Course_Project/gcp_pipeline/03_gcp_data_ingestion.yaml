@@ -16,22 +16,45 @@ tasks:
       - echo "{\"username\":\"{{ secret('KAGGLE_USERNAME')}}\",\"key\":\"{{ secret('KAGGLE_KEY') }}\"}" > {{ workingDir }}//kaggle.json
       - chmod 600 {{ workingDir }}/kaggle.json
       - kaggle datasets download -d mayureshkoli/police-deaths-in-usa-from-1791-to-2022 --unzip -p {{ workingDir }}/data
-      # Let's find the filename dynamically so the next task knows what to grab
-      - ls {{ workingDir }}/data/*.csv > {{ workingDir }}/filename.txt
     outputFiles:
-      - "data/*.csv"
+      # only pull the police deaths csv
+      - "data/police_deaths_USA_v7.csv"
 
-  - id: upload_files
-    type: io.kestra.plugin.core.flow.ForEach
-    values: "{{ outputs.extract_from_kaggle.outputFiles | values }}"
-    tasks:
-    - id: upload_to_gcs
-      type: io.kestra.plugin.gcp.gcs.Upload
-      from: "{{ taskrun.value }}"
-      # This dynamically names the file in GCS based on its original name
-      to: "gs://{{ kv('GCP_BUCKET_NAME') }}/kestra_raw/{{ taskrun.value | split('/') | last }}"
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    # Point directly to the specific file output from the previous task
+    from: "{{ outputs.extract_from_kaggle.outputFiles['data/police_deaths_USA_v7.csv'] }}"
+    to: "gs://{{ kv('GCP_BUCKET_NAME') }}/kestra_raw/police_deaths/year={{ now() | date('yyyy') }}/month={{ now() | date('MM') }}/police_deaths_USA_v7.csv"
 
-# pluginDefaults for GCP credentials and settings - completely changed from postgres setup
+  - id: create_external_bq_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE EXTERNAL TABLE `{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.raw_police_deaths`
+      (
+        Rank STRING,
+        Name STRING,
+        Age FLOAT64,
+        End_Of_Watch DATETIME,
+        Day_Of_Week STRING,
+        Cause STRING,
+        Department STRING,
+        State STRING,
+        Tour STRING,
+        Badge STRING,
+        Weapon STRING,
+        Offender STRING,
+        Summary STRING
+      )
+      OPTIONS (
+        format = 'CSV',
+        uris = ['gs://{{ kv('GCP_BUCKET_NAME') }}/kestra_raw/police_deaths/*'],
+        skip_leading_rows = 1,
+        ignore_unknown_values = TRUE,
+        quote = '"',
+        allow_quoted_newlines = TRUE
+      );
+
+# pluginDefaults for GCP credentials and settings
 pluginDefaults:
   - type: io.kestra.plugin.gcp
     values:
@@ -39,3 +62,9 @@ pluginDefaults:
       projectId: "{{kv('GCP_PROJECT_ID')}}"
       location: "{{kv('GCP_LOCATION')}}"
       bucket: "{{kv('GCP_BUCKET_NAME')}}"
+
+triggers:
+  - id: monthly_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    # Runs at midnight the first of each month
+    cron: "0 0 1 * *"
